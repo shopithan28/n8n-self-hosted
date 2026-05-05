@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n
+  namespace: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: n8n
+        image: n8nio/n8n:latest
+        env:
+          - name: N8N_ENCRYPTION_KEY
+            value: "<your-encryption-key>"
+
+          - name: N8N_HOST
+            value: "<your-kyma-domain>"
+          - name: WEBHOOK_URL
+            value: "https://<your-kyma-domain>/"
+          - name: N8N_PROTOCOL
+            value: "https"
+          - name: N8N_PORT
+            value: "5678"
+
+          - name: N8N_CORS_ALLOWED_ORIGINS
+            value: "https://<your-kyma-domain>/"
+
+          - name: N8N_USER_FOLDER
+            value: "/home/node/.n8n"
+        volumeMounts:
+          - name: n8n-data
+            mountPath: /home/node/.n8n
+      volumes:
+      - name: n8n-data
+        persistentVolumeClaim:
+          claimName: n8n-pvc

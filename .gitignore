@@ -1,0 +1,5 @@
+# Local n8n data directory
+n8n_data/
+
+# Environment variables (copy .env.example → .env and fill in your values)
+.env
